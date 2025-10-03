@@ -2,11 +2,21 @@
 
 _A powerful, universal developer console for React Native applications with network logging, device information, and customizable debugging tools. Built primarily for **Axios** with support for alternative HTTP clients and **encryption/decryption** capabilities._
 
-## Table of Contents
+## 🎯 What is this?
+
+The React Native Developer Console is a debugging tool that helps you:
+- **🔍 Monitor all network requests** (API calls, fetch requests, etc.)
+- **📱 View device and app information** 
+- **🐛 Debug issues** with detailed request/response data
+- **🔐 Decrypt encrypted data** for easier debugging
+- **📊 Track network performance** with statistics
+
+## 📋 Table of Contents
 
 - [✨ Features](#-features)
 - [🚀 Installation](#-installation)
 - [⚡ Quick Start](#-quick-start)
+- [🎮 How to Open the Console](#-how-to-open-the-console)
 - [📡 Network Logging Setup](#-network-logging-setup)
   - [Automatic Setup (Recommended)](#automatic-setup-recommended)
   - [Manual Setup](#manual-setup)
@@ -56,7 +66,7 @@ yarn add react-native-developer-console
 
 ## ⚡ Quick Start
 
-Get up and running in minutes with these simple steps:
+Get up and running in **3 simple steps**:
 
 ### Step 1: Install the Package
 
@@ -66,7 +76,7 @@ npm install react-native-developer-console axios
 yarn add react-native-developer-console axios
 ```
 
-### Step 2: Modify Your App Entry File
+### Step 2: Add to Your App
 
 **File: `App.tsx` or `index.js`**
 
@@ -102,31 +112,57 @@ function App() {
 export default App;
 ```
 
-### Step 3: Use Your Axios Instance
+### Step 3: Open the Console
 
-**File: Anywhere you make API calls**
+**Choose your preferred method:**
+
+- **📱 Shake your device** (easiest)
+- **🎮 Add a debug button** (see examples below)
+- **⚙️ Use programmatic control** (see examples below)
+
+### Step 4: View Your Network Logs
+
+- Open the console using any method above
+- Check the **Network tab** to see all your API calls
+- Tap on any request to see detailed information
+- Use the **General tab** for device info and custom actions
+
+> **🎯 That's it!** Your network requests are now being logged automatically.
+
+## 🎮 How to Open the Console
+
+### **Easiest: Shake Your Device** 📱
+Just shake your device to open the console - it's that simple!
+
+### **Add a Debug Button** 🎮
+Create a floating debug button for easy access:
 
 ```tsx
-import axiosInstance from './api/axios'; // Import your configured instance
+import { useDevConsole } from 'react-native-developer-console';
 
-// Make API calls as usual - they'll be automatically logged
-const fetchData = async () => {
-  try {
-    const response = await axiosInstance.get('/users');
-    return response.data;
-  } catch (error) {
-    console.error('API call failed:', error);
-  }
+const DebugButton = () => {
+  const { showConsole } = useDevConsole();
+  
+  return (
+    <TouchableOpacity onPress={showConsole} style={styles.debugButton}>
+      <Text>🐞</Text>
+    </TouchableOpacity>
+  );
 };
 ```
 
-### Step 4: Access the Console
+### **Programmatic Control** ⚙️
+Use the `useDevConsole` hook in your components:
 
-- **Shake your device** (or use gestures) to open the console
-- Check the **Network tab** to see all your API calls
-- View detailed request/response information
+```tsx
+import { useDevConsole } from 'react-native-developer-console';
 
-> **🎯 That's it!** Your network requests are now being logged automatically.
+const MyComponent = () => {
+  const { showConsole } = useDevConsole();
+  
+  return <Button title="Open Console" onPress={showConsole} />;
+};
+```
 
 ## 📡 Network Logging Setup
 
@@ -434,10 +470,12 @@ const customActions = [
 
 ### Manual Console Control
 
+Use the `useDevConsole` hook to control the console programmatically:
+
 ```tsx
 import { useDevConsole } from 'react-native-developer-console';
 
-function DebugButton() {
+function MyComponent() {
   const { showConsole, hideConsole, toggleConsole } = useDevConsole();
 
   return (
@@ -615,7 +653,31 @@ The console automatically disables in production builds, but you can control thi
 >
 ```
 
+## 🔧 Troubleshooting
+
+### **Console Not Opening?**
+- Make sure you're in development/staging mode
+- Try shaking your device
+- Check that `DevConsoleProvider` wraps your app
+
+### **No Network Logs?**
+- Make sure you're using the same Axios instance you configured
+- Make some API calls first - the console only shows requests after they happen
+- Check you're looking at the Network tab (it's the default)
+
+### **Still Having Issues?**
+Check the console logs for error messages and verify your setup matches the examples above.
+
 ## 📋 Changelog
+
+### [1.1.4] - 2024-01-XX
+
+#### 📚 Documentation Improvements
+- **Simplified README** - Focused on easy getting started experience
+- **Added "How to Open the Console"** - Simple methods to access the console
+- **Streamlined examples** - Removed overwhelming advanced usage patterns
+- **Quick troubleshooting** - Essential fixes for common issues
+- **Better user experience** - Clear, concise instructions for beginners
 
 ### [1.1.3] - 2024-01-XX
 

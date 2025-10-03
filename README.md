@@ -617,6 +617,12 @@ The console automatically disables in production builds, but you can control thi
 
 ## 📋 Changelog
 
+### [1.1.2] - 2024-01-XX
+
+#### 🐛 Bug Fixes
+- **Fixed tab bar visibility** - Tab bar now hides when viewing individual network log details
+- **Improved detail view UX** - Cleaner interface when inspecting specific API calls
+
 ### [1.1.1] - 2024-01-XX
 
 #### 🔧 Improvements

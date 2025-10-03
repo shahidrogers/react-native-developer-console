@@ -224,28 +224,30 @@ const DeveloperConsole: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Tab Navigation */}
-        <View style={styles.tabContainer}>
-          {tabs.map((tab, index) => (
-            <TouchableOpacity
-              key={tab.key}
-              style={[styles.tab, selectedTab === index && styles.activeTab]}
-              onPress={() => setSelectedTab(index)}
-            >
-              <Text
-                style={[
-                  styles.tabText,
-                  selectedTab === index && styles.activeTabText,
-                ]}
+        {/* Tab Navigation - Only show when not viewing log detail */}
+        {!selectedLogId && (
+          <View style={styles.tabContainer}>
+            {tabs.map((tab, index) => (
+              <TouchableOpacity
+                key={tab.key}
+                style={[styles.tab, selectedTab === index && styles.activeTab]}
+                onPress={() => setSelectedTab(index)}
               >
-                {tab.title}
-                {tab.key === 'network' && logs.length > 0 && (
-                  <Text style={styles.tabBadge}> ({logs.length})</Text>
-                )}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+                <Text
+                  style={[
+                    styles.tabText,
+                    selectedTab === index && styles.activeTabText,
+                  ]}
+                >
+                  {tab.title}
+                  {tab.key === 'network' && logs.length > 0 && (
+                    <Text style={styles.tabBadge}> ({logs.length})</Text>
+                  )}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
 
         {/* Tab Content */}
         <View style={styles.content}>{renderTabContent()}</View>

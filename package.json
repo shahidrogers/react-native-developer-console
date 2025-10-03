@@ -1,6 +1,6 @@
 {
   "name": "react-native-developer-console",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A powerful, customizable developer console for React Native apps with network logging, device info, and debugging tools",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",

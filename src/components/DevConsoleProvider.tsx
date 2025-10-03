@@ -31,7 +31,7 @@ export const DevConsoleProvider: React.FC<DevConsoleProviderProps> = ({
   onDecryptData,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(1); // Start with Network tab (index 1)
+  const [selectedTab, setSelectedTab] = useState(0); // Start with Network tab (index 0)
   const [selectedLogId, setSelectedLogId] = useState<string | null>(null);
 
   // Gesture handling refs

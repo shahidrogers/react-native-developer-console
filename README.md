@@ -617,6 +617,12 @@ The console automatically disables in production builds, but you can control thi
 
 ## 📋 Changelog
 
+### [1.1.3] - 2024-01-XX
+
+#### 🐛 Bug Fixes
+- **Fixed default tab selection** - Developer console now correctly opens with Network tab by default
+- **Corrected tab indexing** - Fixed mismatch between initial selectedTab value and tab array indices
+
 ### [1.1.2] - 2024-01-XX
 
 #### 🐛 Bug Fixes

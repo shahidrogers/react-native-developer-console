@@ -154,7 +154,7 @@ const DeveloperConsole: React.FC = () => {
     }
 
     switch (selectedTab) {
-      case 0: // Network tab (now first)
+      case 0: // Network tab (index 0 in tabs array)
         return (
           <NetworkLogList
             networkStats={networkStats}
@@ -167,7 +167,7 @@ const DeveloperConsole: React.FC = () => {
             renderEmptyList={renderEmptyList}
           />
         );
-      case 1: // General tab (now second)
+      case 1: // General tab (index 1 in tabs array)
         return (
           <GeneralInfoPanel
             customActions={customActions}

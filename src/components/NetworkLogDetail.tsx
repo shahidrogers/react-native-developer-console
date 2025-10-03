@@ -82,8 +82,8 @@ const NetworkLogDetail: React.FC<NetworkLogDetailProps> = ({
             ? `${selectedLog.duration}ms`
             : 'Pending',
           headers: selectedLog.headers,
-          requestBody: selectedLog.body,
-          responseBody: selectedLog.response,
+          requestBody: decryptData(selectedLog.body),
+          responseBody: decryptData(selectedLog.response),
         },
       };
 
@@ -121,10 +121,23 @@ const NetworkLogDetail: React.FC<NetworkLogDetailProps> = ({
 
     try {
       if (typeof data === 'string') {
-        return onDecryptData(data);
+        const decrypted = onDecryptData(data);
+        // Try to parse as JSON if it looks like JSON
+        if (
+          typeof decrypted === 'string' &&
+          (decrypted.startsWith('{') || decrypted.startsWith('['))
+        ) {
+          try {
+            return JSON.parse(decrypted);
+          } catch {
+            return decrypted;
+          }
+        }
+        return decrypted;
       }
       return data;
-    } catch {
+    } catch (error) {
+      console.warn('Decryption failed:', error);
       return '[Decryption failed]';
     }
   };
@@ -244,13 +257,14 @@ const NetworkLogDetail: React.FC<NetworkLogDetailProps> = ({
                 <Text style={styles.subsectionTitle}>Request Body</Text>
                 <TouchableOpacity
                   style={styles.copyButton}
-                  onPress={() =>
+                  onPress={() => {
+                    const decryptedBody = decryptData(selectedLog.body);
                     handleCopyRequest(
-                      typeof selectedLog.body === 'string'
-                        ? selectedLog.body
-                        : JSON.stringify(selectedLog.body, null, 2),
-                    )
-                  }
+                      typeof decryptedBody === 'string'
+                        ? decryptedBody
+                        : JSON.stringify(decryptedBody, null, 2),
+                    );
+                  }}
                 >
                   <Text style={styles.copyButtonText}>
                     {copiedRequestFeedback ? '✓ Copied!' : 'Copy'}
@@ -259,9 +273,12 @@ const NetworkLogDetail: React.FC<NetworkLogDetailProps> = ({
               </View>
               <ScrollView horizontal style={styles.codeScrollContainer}>
                 <Text style={styles.jsonText}>
-                  {typeof selectedLog.body === 'string'
-                    ? selectedLog.body
-                    : JSON.stringify(selectedLog.body, null, 2)}
+                  {(() => {
+                    const decryptedBody = decryptData(selectedLog.body);
+                    return typeof decryptedBody === 'string'
+                      ? decryptedBody
+                      : JSON.stringify(decryptedBody, null, 2);
+                  })()}
                 </Text>
               </ScrollView>
             </View>
@@ -275,13 +292,14 @@ const NetworkLogDetail: React.FC<NetworkLogDetailProps> = ({
                 <Text style={styles.subsectionTitle}>Response Body</Text>
                 <TouchableOpacity
                   style={styles.copyButton}
-                  onPress={() =>
+                  onPress={() => {
+                    const decryptedResponse = decryptData(selectedLog.response);
                     handleCopyResponse(
-                      typeof selectedLog.response === 'string'
-                        ? selectedLog.response
-                        : JSON.stringify(selectedLog.response, null, 2),
-                    )
-                  }
+                      typeof decryptedResponse === 'string'
+                        ? decryptedResponse
+                        : JSON.stringify(decryptedResponse, null, 2),
+                    );
+                  }}
                 >
                   <Text style={styles.copyButtonText}>
                     {copiedResponseFeedback ? '✓ Copied!' : 'Copy'}
@@ -290,9 +308,12 @@ const NetworkLogDetail: React.FC<NetworkLogDetailProps> = ({
               </View>
               <ScrollView horizontal style={styles.codeScrollContainer}>
                 <Text style={styles.jsonText}>
-                  {typeof selectedLog.response === 'string'
-                    ? selectedLog.response
-                    : JSON.stringify(selectedLog.response, null, 2)}
+                  {(() => {
+                    const decryptedResponse = decryptData(selectedLog.response);
+                    return typeof decryptedResponse === 'string'
+                      ? decryptedResponse
+                      : JSON.stringify(decryptedResponse, null, 2);
+                  })()}
                 </Text>
               </ScrollView>
             </View>

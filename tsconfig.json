@@ -15,8 +15,20 @@
     "noEmit": false,
     "declaration": true,
     "outDir": "lib",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "react": ["./node_modules/@types/react"],
+      "react-native": ["./node_modules/@types/react-native"]
+    }
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "lib", "example", "**/*.test.ts", "**/*.test.tsx"]
+  "exclude": [
+    "node_modules",
+    "lib",
+    "example",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "../src/**/*"
+  ]
 }

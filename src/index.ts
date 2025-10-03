@@ -35,6 +35,7 @@ export type {
   ThemeConfig,
   DevConsoleContextType,
   DevConsoleProviderProps,
+  DeveloperConsoleProps,
   UseNetworkLoggerReturn,
   NetworkInterceptorConfig,
   GeneralInfoPanelProps,

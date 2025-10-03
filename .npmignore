@@ -3,7 +3,6 @@ node_modules/
 example/node_modules/
 
 # Build outputs
-lib/
 *.tsbuildinfo
 
 # Development files

@@ -83,8 +83,8 @@ export type ActiveTab = 'network' | 'general';
 
 // Main Component Props
 export interface DeveloperConsoleProps {
-  visible: boolean;
-  onClose: () => void;
+  visible?: boolean;
+  onClose?: () => void;
   theme?: ThemeConfig;
   environment?: 'development' | 'staging' | 'production';
   customActions?: CustomAction[];
@@ -107,6 +107,8 @@ export interface DevConsoleProviderProps {
   longPressDelay?: number;
   doubleTapDelay?: number;
   customActions?: CustomAction[];
+  encryptionEnabled?: boolean;
+  onDecryptData?: (encryptedData: string) => string;
 }
 
 // Network Logger Hook Return Type
@@ -168,6 +170,8 @@ export interface DevConsoleContextType {
   setSelectedTab: (tab: number) => void;
   setSelectedLogId: (id: string | null) => void;
   customActions: CustomAction[];
+  encryptionEnabled: boolean;
+  onDecryptData?: (encryptedData: string) => string;
 }
 
 // Component Props for Sub-components

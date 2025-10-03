@@ -1,6 +1,6 @@
 # React Native Developer Console
 
-_A powerful, universal developer console for React Native applications with network logging, device information, and customizable debugging tools. Built primarily for **Axios** with support for alternative HTTP clients._
+_A powerful, universal developer console for React Native applications with network logging, device information, and customizable debugging tools. Built primarily for **Axios** with support for alternative HTTP clients and **encryption/decryption** capabilities._
 
 ## Table of Contents
 
@@ -17,12 +17,14 @@ _A powerful, universal developer console for React Native applications with netw
   - [Network Monitoring](#network-monitoring)
   - [Custom Debug Actions](#custom-debug-actions)
   - [Manual Console Control](#manual-console-control)
+  - [Encryption/Decryption Support](#encryptiondecryption-support)
 - [📚 API Reference](#-api-reference)
   - [Components](#components)
   - [Hooks](#hooks)
   - [Utilities](#utilities)
 - [🔧 TypeScript Types](#-typescript-types)
 - [🔒 Environment Controls](#-environment-controls)
+- [📋 Changelog](#-changelog)
 - [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
 - [💬 Support](#-support)
@@ -39,6 +41,7 @@ _A powerful, universal developer console for React Native applications with netw
 - 🔁 **Request Repeating**: Easily repeat failed or successful requests
 - 📋 **Clipboard Support**: Copy request/response data to clipboard
 - 🔒 **Production Safe**: Built-in environment controls and gating
+- 🔐 **Encryption Support**: Decrypt request/response bodies with custom decryption functions
 - 🎯 **Multi-Client Support**: **Primary support for Axios** with alternatives for Fetch and React Query
 
 ## 🚀 Installation
@@ -349,6 +352,10 @@ export const customApiClient = {
       onPress: () => console.log('Reset user data'),
     },
   ]}
+  encryptionEnabled={true}            // Enable decryption for request/response bodies
+  onDecryptData={(encryptedData) => { // Custom decryption function
+    return decryptFunction(encryptedData);
+  }}
 >
 ```
 
@@ -443,14 +450,90 @@ function DebugButton() {
 }
 ```
 
+### Encryption/Decryption Support
+
+The developer console now supports automatic decryption of request and response bodies, making it easy to debug encrypted API communications.
+
+#### Basic Setup
+
+```tsx
+import { DevConsoleProvider } from 'react-native-developer-console';
+import { decryptFunction } from './utils/encryption';
+
+function App() {
+  return (
+    <DevConsoleProvider
+      encryptionEnabled={true}
+      onDecryptData={(encryptedData) => {
+        try {
+          return decryptFunction(encryptedData);
+        } catch (error) {
+          console.warn('Decryption failed:', error);
+          return encryptedData; // Return original if decryption fails
+        }
+      }}
+    >
+      <YourApp />
+      <DeveloperConsole />
+    </DevConsoleProvider>
+  );
+}
+```
+
+#### Advanced Example with CryptoHelper
+
+```tsx
+import { DevConsoleProvider } from 'react-native-developer-console';
+import CryptoHelper from 'common/util/crypto';
+
+function App() {
+  return (
+    <DevConsoleProvider
+      encryptionEnabled={true}
+      onDecryptData={(encryptedData: string) => {
+        try {
+          const decrypted = CryptoHelper.decrypt(encryptedData);
+          // The console will automatically parse JSON if the decrypted data looks like JSON
+          return decrypted;
+        } catch (error) {
+          console.warn('Failed to decrypt data:', error);
+          return encryptedData; // Return original if decryption fails
+        }
+      }}
+    >
+      <YourApp />
+      <DeveloperConsole />
+    </DevConsoleProvider>
+  );
+}
+```
+
+#### Features
+
+- **🔐 Automatic Decryption**: Request and response bodies are automatically decrypted when displayed
+- **📄 JSON Parsing**: Decrypted strings that look like JSON are automatically parsed for better formatting
+- **🛡️ Error Handling**: Graceful fallback if decryption fails - shows original encrypted data
+- **📋 Copy Support**: Copy functions also use decrypted data
+- **📊 Summary Export**: Export summary includes decrypted data
+- **🔧 Type Safety**: Full TypeScript support with proper types
+
+#### When to Use
+
+- Your API uses encrypted request/response bodies
+- You want to debug the actual data being sent/received
+- You need to inspect encrypted payloads during development
+- You want to copy/share decrypted data for debugging
+
 ## 📚 API Reference
 
 ### Components
 
 - **`DevConsoleProvider`**: Context provider for the developer console
+  - `encryptionEnabled?: boolean` - Enable/disable decryption support
+  - `onDecryptData?: (encryptedData: string) => string` - Custom decryption function
 - **`DeveloperConsole`**: Main console component with tabs and interface
 - **`NetworkLogList`**: List of network requests with filtering (Axios-optimized)
-- **`NetworkLogDetail`**: Detailed view of individual network requests
+- **`NetworkLogDetail`**: Detailed view of individual network requests with decryption support
 - **`GeneralInfoPanel`**: Device and app information panel
 
 ### Hooks
@@ -502,6 +585,23 @@ interface CustomAction {
   title: string;
   onPress: () => void;
 }
+
+// New in v1.1.0 - Decryption Support
+interface DevConsoleProviderProps {
+  children: React.ReactNode;
+  encryptionEnabled?: boolean;
+  onDecryptData?: (encryptedData: string) => string;
+  // ... other props
+}
+
+interface NetworkLogDetailProps {
+  selectedLog: NetworkResponse;
+  onBack: () => void;
+  isRepeatingRequest: boolean;
+  handleRepeatRequest: (log: NetworkResponse) => void;
+  encryptionEnabled?: boolean;
+  onDecryptData?: (encryptedData: string) => string;
+}
 ```
 
 ## Environment Controls
@@ -514,6 +614,78 @@ The console automatically disables in production builds, but you can control thi
   environment={__DEV__ ? 'development' : 'production'}
 >
 ```
+
+## 📋 Changelog
+
+### [1.1.1] - 2024-01-XX
+
+#### 🔧 Improvements
+- **Network tab now shows by default** - better developer experience
+- **Swapped tab order** - Network tab appears first, General tab second
+
+### [1.1.0] - 2024-01-XX
+
+#### 🚀 Migration Guide
+
+**Upgrading from v1.0.0 to v1.1.0:**
+
+No breaking changes! The new decryption features are completely optional and backward compatible.
+
+**To add decryption support:**
+```tsx
+// Before (v1.0.0)
+<DevConsoleProvider>
+  <YourApp />
+  <DeveloperConsole />
+</DevConsoleProvider>
+
+// After (v1.1.0) - with decryption
+<DevConsoleProvider
+  encryptionEnabled={true}
+  onDecryptData={(encryptedData) => {
+    return yourDecryptFunction(encryptedData);
+  }}
+>
+  <YourApp />
+  <DeveloperConsole />
+</DevConsoleProvider>
+```
+
+**Existing code will continue to work without any changes.**
+
+#### ✨ New Features
+- **🔐 Encryption/Decryption Support**: Added comprehensive support for decrypting request and response bodies
+  - Custom decryption functions via `onDecryptData` prop
+  - Automatic JSON parsing of decrypted data
+  - Graceful error handling with fallback to original data
+  - Support for both request and response body decryption
+  - Decryption applied to copy functions and summary export
+
+#### 🔧 Improvements
+- Enhanced `NetworkLogDetail` component with decryption capabilities
+- Updated `DevConsoleProvider` to support encryption configuration
+- **Network tab now shows by default** - better developer experience
+- **Swapped tab order** - Network tab appears first, General tab second
+- Improved TypeScript types for better developer experience
+- Enhanced error handling and logging
+
+#### 📚 Documentation
+- Added comprehensive encryption/decryption usage examples
+- Updated API reference with new props
+- Enhanced README with encryption feature documentation
+
+### [1.0.0] - 2024-01-XX
+
+#### 🎉 Initial Release
+- Network request logging with Axios, Fetch, and React Query support
+- Device information display
+- Customizable themes
+- Custom debug actions
+- Network statistics and performance metrics
+- Request repeating functionality
+- Clipboard support for copying data
+- Production-safe environment controls
+- Comprehensive TypeScript support
 
 ## Contributing
 

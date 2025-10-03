@@ -27,6 +27,8 @@ const DeveloperConsole: React.FC = () => {
     setSelectedTab,
     setSelectedLogId,
     customActions,
+    encryptionEnabled,
+    onDecryptData,
   } = useDevConsole();
 
   const {
@@ -145,12 +147,27 @@ const DeveloperConsole: React.FC = () => {
           onBack={() => setSelectedLogId(null)}
           isRepeatingRequest={isRepeatingRequest}
           handleRepeatRequest={handleRepeatRequest}
+          encryptionEnabled={encryptionEnabled}
+          onDecryptData={onDecryptData}
         />
       );
     }
 
     switch (selectedTab) {
-      case 0: // General tab
+      case 0: // Network tab (now first)
+        return (
+          <NetworkLogList
+            networkStats={networkStats}
+            searchedAPI={searchedAPI}
+            setSearchedAPI={setSearchedAPI}
+            clearLogs={clearLogs}
+            renderStatusFilters={renderStatusFilters}
+            filteredLogs={filteredLogs}
+            setSelectedLogId={setSelectedLogId}
+            renderEmptyList={renderEmptyList}
+          />
+        );
+      case 1: // General tab (now second)
         return (
           <GeneralInfoPanel
             customActions={customActions}
@@ -174,19 +191,6 @@ const DeveloperConsole: React.FC = () => {
             onClearStorage={handleClearStorage}
           />
         );
-      case 1: // Network tab
-        return (
-          <NetworkLogList
-            networkStats={networkStats}
-            searchedAPI={searchedAPI}
-            setSearchedAPI={setSearchedAPI}
-            clearLogs={clearLogs}
-            renderStatusFilters={renderStatusFilters}
-            filteredLogs={filteredLogs}
-            setSelectedLogId={setSelectedLogId}
-            renderEmptyList={renderEmptyList}
-          />
-        );
       default:
         return null;
     }
@@ -194,8 +198,8 @@ const DeveloperConsole: React.FC = () => {
 
   // Tab headers
   const tabs = [
-    { key: 'general', title: 'General' },
     { key: 'network', title: 'Network' },
+    { key: 'general', title: 'General' },
   ];
 
   if (!isVisible) {

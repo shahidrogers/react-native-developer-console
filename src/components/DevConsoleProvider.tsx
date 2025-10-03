@@ -27,9 +27,11 @@ export const DevConsoleProvider: React.FC<DevConsoleProviderProps> = ({
   longPressDelay = 1000,
   doubleTapDelay = 300,
   customActions = [],
+  encryptionEnabled = false,
+  onDecryptData,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(0);
+  const [selectedTab, setSelectedTab] = useState(1); // Start with Network tab (index 1)
   const [selectedLogId, setSelectedLogId] = useState<string | null>(null);
 
   // Gesture handling refs
@@ -147,6 +149,8 @@ export const DevConsoleProvider: React.FC<DevConsoleProviderProps> = ({
     setSelectedTab,
     setSelectedLogId,
     customActions,
+    encryptionEnabled,
+    onDecryptData,
   };
 
   return (

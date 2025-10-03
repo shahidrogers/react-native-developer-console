@@ -1,0 +1,31 @@
+import { NetworkRequest, NetworkResponse, NetworkInterceptorConfig } from '../types';
+export declare class UniversalNetworkLogger {
+    private logs;
+    private subscribers;
+    private pendingRequests;
+    private maxLogs;
+    private ignoredUrls;
+    private ignoredHosts;
+    private enableBodyLogging;
+    private enableInProduction;
+    constructor(config?: NetworkInterceptorConfig['config']);
+    private shouldLogRequest;
+    private generateId;
+    private addLog;
+    private notifySubscribers;
+    logRequest(request: Partial<NetworkRequest>): string | null;
+    logResponse(requestId: string, response: Partial<NetworkResponse>): void;
+    subscribe(callback: (logs: NetworkResponse[]) => void): () => void;
+    clearLogs(): void;
+    getLogs(): NetworkResponse[];
+    getNetworkStats(): any;
+    repeatRequest(log: NetworkResponse): Promise<NetworkResponse>;
+    createAxiosInterceptor(axiosInstance: any): () => void;
+    createFetchInterceptor(): () => void;
+}
+export declare function getNetworkLogger(config?: NetworkInterceptorConfig['config']): UniversalNetworkLogger;
+export declare const subscribeToNetworkLogs: (callback: (logs: NetworkResponse[]) => void) => () => void;
+export declare const clearNetworkLogs: () => void;
+export declare const getNetworkLogs: () => NetworkResponse[];
+export declare const repeatNetworkRequest: (log: NetworkResponse) => Promise<NetworkResponse>;
+export declare const getNetworkStats: () => any;

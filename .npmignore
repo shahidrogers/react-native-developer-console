@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+example/node_modules/
+
+# Build outputs
+*.tsbuildinfo
+
+# Development files
+src/
+*.ts
+*.tsx
+!*.d.ts
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage
+coverage/
+
+# Temporary files
+.tmp/
+.temp/
+
+# Documentation (keep README)
+docs/
+*.md
+!README.md
